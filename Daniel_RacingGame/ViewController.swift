@@ -15,9 +15,16 @@ protocol subviewDelegate {
 class ViewController: UIViewController, subviewDelegate {
     func change() {
         
+    
+        CBehaviour.removeAllBoundaries()
         CBehaviour.addBoundary(withIdentifier: "UserCar" as NSCopying, for: UIBezierPath(rect: carImage.frame))
-        
+       
+        Score = Score - 2
+        self.ShotClock.text = String(self.Score)
     }
+    
+    @IBOutlet weak var replay: UIButton!
+    @IBOutlet weak var ShotClock: UILabel!
     
     var carGameAnimator: UIDynamicAnimator!
     var DIBehaviour: UIDynamicItemBehavior!
@@ -25,7 +32,7 @@ class ViewController: UIViewController, subviewDelegate {
     var CBehaviour: UICollisionBehavior!
     var Score = 0;
     var ScoreArray: [UIImageView] = []
-    
+    let GameOver = UIImageView(image: nil)
     
     
     let carArrary = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
@@ -34,9 +41,19 @@ class ViewController: UIViewController, subviewDelegate {
     
     @IBOutlet weak var carImage: DraggedImageView!
     
+    @IBAction func restart(_ sender: Any) {
+        viewDidLoad()
+        
+        ShotClock.text = ""
+        Score = 0;
+        GameOver.isHidden = true
+        replay.isHidden = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
        
+        
         carImage.myDelegate = self
         
         carGameAnimator = UIDynamicAnimator(referenceView: self.view)
@@ -72,6 +89,11 @@ class ViewController: UIViewController, subviewDelegate {
             self.DIBehaviour.addItem(carObstacleView)
             self.DIBehaviour.addLinearVelocity(CGPoint(x: 0, y: 200), for: carObstacleView)
             self.CBehaviour.addItem(carObstacleView)
+            
+            self.ScoreArray.append((carObstacleView))
+            self.Score += 2
+            self.ShotClock.text = String(describing: self.ShotClock)
+
             }
         
         }
@@ -81,7 +103,17 @@ class ViewController: UIViewController, subviewDelegate {
         CBehaviour.translatesReferenceBoundsIntoBoundary = false
         carGameAnimator.addBehavior(CBehaviour)
         
-        
+        let GameEnd = DispatchTime.now() + 20
+        DispatchQueue.main.asyncAfter(deadline: GameEnd) {
+            
+            self.GameOver.isHidden = false
+            self.replay.isHidden = false
+            self.GameOver.image = UIImage(named: "game_over.jpg")
+            self.GameOver.frame = UIScreen.main.bounds
+            self.view.addSubview(self.GameOver)
+            self.view.bringSubview(toFront: self.GameOver)
+            self.view.bringSubview(toFront: self.replay)
+        }
         
         
         var imageArray : [UIImage]!
@@ -98,7 +130,7 @@ class ViewController: UIViewController, subviewDelegate {
                       UIImage(named: "road9.png")!,
                       UIImage(named: "road10.png")!]
         
-         roadImage.image = UIImage.animatedImage(with: imageArray, duration: 0.5)
+         roadImage.image = UIImage.animatedImage(with: imageArray, duration: 0.2)
     
         
     }
