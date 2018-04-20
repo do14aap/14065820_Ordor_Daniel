@@ -135,15 +135,6 @@ class ViewController: UIViewController, subviewDelegate {
         
     }
         
-      //  UIView.animate(withDuration: 2, delay: 0.0, options: [UIViewAnimationOptions.repeat, .curveLinear], animations:
-           // {
-             //   self.roadImage.alpha = 0.0
-              //  self.roadImage.center.x += self.view.bounds.width
-                
-      //  }, completion: nil
-      //  )
-        
- //   }
 
 
     override func didReceiveMemoryWarning() {
